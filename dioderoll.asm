@@ -3,19 +3,13 @@
 ;
 
 setup:	
-	ldi r16, 0b00111111
-	out DDRB, r16					; set PB0-PB5 (arduino 8-13) as output
-rewind:
-	ldi r16, 0b00000001				; start from PB0 HIGH
+	ldi r16, 0b11111111
+	out DDRD, r16					; set PD0-PD7 (arduino 0-7) as output
+	ldi r16, 1
 loop:
-	cpi r16, 0b01000000				; if register points at PB6 (arduino nc)
-	breq rewind					; then start from PB0 again
-
-	out PortB, r16					; set PBx HIGH, rest of potrt LOW
-
+	out PORTD, r16					; set PDx HIGH, rest of potrt LOW
 	rcall delay					; wait 250ms
-
-	lsl r16						; shift r16 left, change to next diode
+	rol r16						; shift r16 left, change to next diode
 	rjmp loop
 
 delay:
@@ -30,5 +24,6 @@ waste:
 	brne waste
 	dec r19						; loop set amount of times
 	brne waste					; in this case 256*256*15 for roughly 250ms delay
-ret
+	ret
+	
 	
